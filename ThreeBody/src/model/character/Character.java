@@ -4,17 +4,17 @@ import model.card.Card;
 
 public abstract class Character {
     
-    private int initialTechPoint;
-    private int initialResource;
+    protected int initialTechPoint;
+    protected int initialResource;
     
     /*
-     * Ã¿»ØºÏÊýÖµÔö¼ÓÊ±µ÷ÓÃ 
+     * Ã¿ï¿½Øºï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ 
      */
     public abstract int addTechPoint(int nowTechPoint);
     public abstract int addResource(int nowResource);
     
     /*
-     * ÅÐ¶ÏÄ³¸ö¼¼ÄÜÊÇ·ñ¿ÉÓÃ 
+     * ï¿½Ð¶ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ 
      */
     public abstract boolean isAvailable(Card card);
     

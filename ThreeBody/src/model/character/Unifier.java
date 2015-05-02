@@ -12,20 +12,23 @@ import model.card.Card;
 */
 public class Unifier extends Character {
 
-	@Override
-	public void addTechPoint() {
-		this.setTechPoint(getTechPoint());
-	}
 
-	@Override
-	public void addResource() {
-		this.setResource(getResource()+10);
-	}
 
 	@Override
 	public boolean isAvailable(Card card) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public int addTechPoint(int nowTechPoint) {
+		return nowTechPoint;
+	}
+
+	@Override
+	public int addResource(int nowResource) {
+		int resourceSpeed=10;
+		return nowResource+resourceSpeed;
 	}
 
 }

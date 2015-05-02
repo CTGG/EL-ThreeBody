@@ -12,22 +12,26 @@ import model.card.Card;
  * 广播：只能获得坐标，可以发送（结果是侵占，玩家点击确认发送）
  * 
  */
-public class ThreeBody extends Character{
+public class ThreeBody extends Character {
 
-	@Override
-	public void addTechPoint() {
-		this.setTechPoint(getTechPoint()+10);
-	}
 
-	@Override
-	public void addResource() {
-		this.setResource(getResource()+10);
-	}
 
 	@Override
 	public boolean isAvailable(Card card) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public int addTechPoint(int nowTechPoint) {
+		int techSpeed=8;
+		return nowTechPoint+techSpeed;
+	}
+
+	@Override
+	public int addResource(int nowResource) {
+		int resourceSpeed=10;
+		return nowResource+resourceSpeed;
 	}
 
 }

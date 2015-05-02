@@ -14,19 +14,23 @@ import model.card.Card;
 
 public class Earth extends Character{
 	
-	public  void addTechPoint(){
-		this.setTechPoint(getTechPoint()+15);
-	}
-	
-	public  void addResource(){
-		this.setResource(getResource()+10);		  
-	  }
-	  
 	public  boolean isAvailable(Card card){
 // 	switch(card){
 //		case 
 //		}	
 		//TODO
 		return false;
+	}
+
+	@Override
+	public int addTechPoint(int nowTechPoint) {
+		int techSpeed =15 ;
+		return   nowTechPoint+techSpeed ;
+	}
+
+	@Override
+	public int addResource(int nowResource) {
+		int resourceSpeed=10;
+		return nowResource+resourceSpeed;
 	}
 }

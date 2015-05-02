@@ -22,7 +22,7 @@ public abstract class Card implements Serializable{
     
     public abstract void process();
     
-<<<<<<< Updated upstream
+
     public String getName() {
 		return name;
 	}
@@ -34,7 +34,5 @@ public abstract class Card implements Serializable{
 	public int getTechPoint() {
 		return techPoint;
 	}
-=======
 
->>>>>>> Stashed changes
 }
