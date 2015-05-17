@@ -16,9 +16,8 @@ import javax.swing.JPanel;
 public class MessageByFramePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
-	private JButton btnOK;
 	private JLabel msgLabel;
-	
+	private TwoSecondCloseFrameThread tscf;
 	/**
 	 * 
 	 * @param successInformFrame 
@@ -27,14 +26,12 @@ public class MessageByFramePanel extends JPanel{
 		this.setLayout(null);
 		this.frame=successInformFrame;
 		this.initComonent(message);
+		this.tscf = new TwoSecondCloseFrameThread();
+		this.tscf.start();
 	}
 	
 	private void initComonent(String message) {
-		this.btnOK = new JButton(new ImageIcon("images/btnOk.png"));
-		this.btnOK.setContentAreaFilled(false);
-		this.btnOK.setBounds(120, 132,60, 30);
-		btnOK.addMouseListener(new OKListener());
-		this.add(btnOK);
+
 		
 		msgLabel = new JLabel(message,JLabel.CENTER);
 		msgLabel.setForeground(Color.YELLOW);
@@ -54,5 +51,16 @@ public class MessageByFramePanel extends JPanel{
 		Image IMG_MAIN = new ImageIcon("images/img1.jpg").getImage();
 		// 绘制游戏界面
 		g.drawImage(IMG_MAIN, 0, 0,695,215, null);
+	}
+	private class TwoSecondCloseFrameThread extends Thread{
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			frame.dispose();
+		}
 	}
 }

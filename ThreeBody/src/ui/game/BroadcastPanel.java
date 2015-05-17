@@ -13,12 +13,14 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import control.GameControl;
 import model.Coordinate;
 import model.Player;
 import model.operation.Broadcast;
+import model.operation.Conquer;
 import model.operation.Operation;
+import model.role.Role;
 import ui.FrameUtil;
+import control.GameControl;
 import dto.AccountDTO;
 import dto.GameDTO;
 
@@ -30,6 +32,7 @@ public class BroadcastPanel extends JPanel {
 	private JTextField btnCoordinateFour;
 	private JButton btnOK;
 	private JButton btnReturn;
+	private JButton btnConquer;
 	private JComboBox<String> select;
 	private boolean isAbleToPress=true;
 	List<Player> players=null;
@@ -66,7 +69,7 @@ public class BroadcastPanel extends JPanel {
 		
 		this.btnOK = new JButton(new ImageIcon("images/btnbroadcast.png"));
 		this.btnOK.setContentAreaFilled(false);
-		this.btnOK.setBounds(360, 105, 120, 60);
+		this.btnOK.setBounds(380, 105, 120, 60);
 		this.btnOK.setBorderPainted(false);
 		btnOK.addMouseListener(new BroadcastListener());
 		this.add(btnOK);
@@ -77,6 +80,17 @@ public class BroadcastPanel extends JPanel {
 		this.btnReturn.setBorderPainted(false);
 		btnReturn.addMouseListener(new ReturnListener());
 		this.add(btnReturn);
+		
+		this.btnConquer = new JButton(new ImageIcon("images/conquer.png"));
+		this.btnConquer.setContentAreaFilled(false);
+		this.btnConquer.setBounds(240, 105, 120, 60);
+		this.btnConquer.setBorderPainted(false);
+		btnConquer.addMouseListener(new ConquerListener());
+		Role roleName = GameDTO.getInstance().getUser().getRole();
+		if(roleName.toString().equals("三体")){
+			this.add(btnConquer);
+		}
+		
 		
 		select = new JComboBox<String>();
 		select.setFont(new Font("宋体", Font.PLAIN, 30));
@@ -112,6 +126,25 @@ public class BroadcastPanel extends JPanel {
 				String id = AccountDTO.getInstance().getId();
 				Operation broadcast = new Broadcast(id,null,coordinate);
 				GameControl.getInstance().doOperation(broadcast);
+			} catch (Exception exception) {
+				FrameUtil.sendMessageByFrame("Error", "坐标输入错误");
+			}
+		}
+	}
+	
+	class ConquerListener extends MouseAdapter {
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			try {
+				int[] sequence = new int[4];
+				sequence[0] = Integer.parseInt(btnCoordinateOne.getText());
+				sequence[1] = Integer.parseInt(btnCoordinateTwo.getText());
+				sequence[2] = Integer.parseInt(btnCoordinateThree.getText());
+				sequence[3] = Integer.parseInt(btnCoordinateFour.getText());
+				Coordinate coordinate = new Coordinate(sequence);
+				String id = AccountDTO.getInstance().getId();
+				Operation conquer = new Conquer(id,null,coordinate);
+				GameControl.getInstance().doOperation(conquer);
 			} catch (Exception exception) {
 				FrameUtil.sendMessageByFrame("Error", "坐标输入错误");
 			}
