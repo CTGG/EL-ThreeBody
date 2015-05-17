@@ -24,7 +24,7 @@ public class Player implements Serializable {
     /*
      * 是否可以使用特权
      */
-    private boolean privilegeAvailable=true;
+    private boolean privilegeAvailable;
     /*
      * 是否是AI
      */
@@ -32,7 +32,7 @@ public class Player implements Serializable {
     /*
      * 是否可以使用广播
      */
-    private boolean broadcast;
+    private boolean broadcastable;
     /*
      * 是否已经败北
      */
@@ -62,6 +62,10 @@ public class Player implements Serializable {
 		
 		resource = this.role.getInitialResource();
 		techPoint = this.role.getInitialTechPoint();
+		
+		privilegeAvailable = true;
+		lost = false;
+		broadcastable = true;
 	}
     
     public void findCoordinate(Player player,int position,int value){
@@ -76,10 +80,11 @@ public class Player implements Serializable {
     	foundCoordinates = new HashMap<Player, Coordinate>();
     	foundRoles = new HashMap<Player, Role>();
     	// make四个都为UNKNOWN的坐标
-    	int uk = Coordinate.UNKNOWN;
-    	int[] uks = new int[Coordinate.DIMENSIONS];
-    	Arrays.fill(uks, uk);
+    	
     	for(Player player : GameDTO.getInstance().getPlayers()){
+    		int uk = Coordinate.UNKNOWN;
+        	int[] uks = new int[Coordinate.DIMENSIONS];
+        	Arrays.fill(uks, uk);
     		if(player != this){
     			foundCoordinates.put(player, new Coordinate(uks));
     			foundRoles.put(player, null);
@@ -142,12 +147,12 @@ public class Player implements Serializable {
 		this.techPoint = techPoint;
 	}
 
-	public boolean isBroadcast() {
-		return broadcast;
+	public boolean isBroadcastable() {
+		return broadcastable;
 	}
 
-	public void setBroadcast(boolean broadcast) {
-		this.broadcast = broadcast;
+	public void setBroadcastable(boolean broadcast) {
+		this.broadcastable = broadcast;
 	}
 
 	public Map<Player, Coordinate> getFoundCoordinates() {
