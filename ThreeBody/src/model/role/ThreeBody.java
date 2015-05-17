@@ -18,8 +18,14 @@ import model.card.Card;
  */
 public class ThreeBody extends Role{
 
+	/**
+	 * default
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public ThreeBody() {
 		super();
+		// 原60，30，15,30,测试用改成100，100,15,30
 		
 		GameConfig gc=new GameConfig();
 		List<RoleConfig> roleList=gc.getRolesConfig();

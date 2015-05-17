@@ -20,7 +20,7 @@ public class RoomControl {
 	public RoomControl(MainControl mc,RMIRoom rmir){
 		this.mainControl = mc;
 		this.rmir = rmir;
-		this.room = this.refreshRoom();
+		room = refreshRoom();
 		this.gsc = new GameStartChecker();
 		this.inRoom = true;
 		gsc.start();
@@ -109,28 +109,29 @@ public class RoomControl {
 	 */
 	public GameControl getGameService(){
 		try {
-			return new GameControl(rmir.getGameServer());
+			GameControl.init(rmir.getGameServer());
+			return GameControl.getInstance();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 检查游戏是否开始，若开始，进入游戏界面
 	 */
-	private class GameStartChecker extends Thread{
+	private class GameStartChecker extends Thread {
 		@Override
-		public void run(){
-			while(inRoom && !room.isStart()){
+		public void run() {
+			while (inRoom && !room.isStart()) {
 				try {
-					room = refreshRoom();
-					refreshRoomPanel();
 					Thread.sleep(2000);
+					refreshRoomPanel();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
+
 			if(room.isStart()){
 				mainControl.toGame(room.getSize());
 			}
@@ -139,7 +140,12 @@ public class RoomControl {
 	
 	private synchronized void refreshRoomPanel(){
 		if(inRoom){
+			room = refreshRoom();
 			roomPanel.refresh();
 		}
+	}
+
+	public synchronized void changeInRoom() {
+		this.inRoom = !this.inRoom;
 	}
 }

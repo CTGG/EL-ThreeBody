@@ -2,13 +2,11 @@ package model.card;
 
 import java.util.List;
 
+import model.operation.Operation;
 import config.CardConfig;
 import config.GameConfig;
-import ui.game.GamblePanel;
 import model.operation.ResourceChange;
 import model.operation.TechChange;
-import dto.GameDTO;
-
 
 
 /*
@@ -33,16 +31,17 @@ public class ResourcePotion extends Card {
 	}
 
 	@Override
-	public void process() {
-		GameDTO dto=GameDTO.getInstance();
+	public List<Operation> process(List<Operation> subOperations) {
 		
 		//pay techPoint
 		TechChange tc=new TechChange(operator, receiver, TechChange.Type.DECREASE, this.requiredTechPoint);
-		dto.depositOperation(tc);
+		subOperations.add(tc);
+		
 		//get resources
 		ResourceChange rc=new ResourceChange(operator, receiver, ResourceChange.Type.INCREASE, this.requiredResource);
-		dto.depositOperation(rc);
+		subOperations.add(rc);
 		
+		return subOperations;
 	}
 	
 	

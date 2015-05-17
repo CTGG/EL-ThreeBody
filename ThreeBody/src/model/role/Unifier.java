@@ -14,12 +14,17 @@ import model.card.ResourcePotion;
  * 资源：初始值：中 增长率：与地球三体都相同
  * 技能限制：无法使用获取身份的技能
  * 广播：同地球
-*/
+ */
 public class Unifier extends Role {
 	
+	/**
+	 * default
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Unifier() {
 		super();
-		
+		// 原80，100，0,30,测试用改成100，100,0,30
 		
 		GameConfig gc=new GameConfig();
 		List<RoleConfig> roleList=gc.getRolesConfig();

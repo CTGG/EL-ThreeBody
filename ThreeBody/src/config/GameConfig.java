@@ -49,8 +49,6 @@ public class GameConfig {
 		//配置角色参数
 		this.setRolesConfig(game.element("roles"));
 		
-		
-	
 	}
 	
 	/*
@@ -100,6 +98,4 @@ public class GameConfig {
 		return rolesConfig;
 	}
 
-	
-	
 }

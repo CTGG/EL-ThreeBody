@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,13 +19,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.Coordinate;
 import model.Player;
+import model.card.TechPotion;
+import model.operation.CardUse;
+import model.role.Role;
 import ui.FrameUtil;
 import ui.InformFrame;
 import ui.block.PatialBlockFrame;
 import ui.block.PatialBlockPanel;
 import ui.sophon.SophonFinderFrame;
 import ui.sophon.SophonFinderPanel;
+import control.GameControl;
 import control.MainControl;
 import dto.AccountDTO;
 import dto.GameDTO;
@@ -72,10 +78,14 @@ public class GamePanel  extends JPanel{
 	
 	private List<Player> enemies = new ArrayList<Player>();
 	private Player user = GameDTO.getInstance().getUser();
+	private GameControl gameControl;
+	private GameDTO gameDTO;
 	
-	public GamePanel(MainControl mainControl,int NumOfPlayer) {
+	public GamePanel(MainControl mainControl,int NumOfPlayer,GameControl gameControl) {
+		this.gameControl = gameControl;
+		this.gameDTO = GameDTO.getInstance();
 		// 初始化对方玩家
-		for (Player player : GameDTO.getInstance().getPlayers()) {
+		for (Player player : gameDTO.getPlayers()) {
 			if(!player.getAccount().getId().equals(user.getAccount().getId())){
 				enemies.add(player);
 			}
@@ -89,6 +99,7 @@ public class GamePanel  extends JPanel{
 		this.initPrompt();
 		this.createEnemy();
 		this.createCoordinatePanel();
+		
 	}
 	
 	private void initPrompt() {
@@ -143,7 +154,7 @@ public class GamePanel  extends JPanel{
 	
 	private void coordinateShow(int i){
 		Player pi = this.enemies.get(i);
-		String role = user.getFoundRoles().get(pi) == null ? "未明" : pi.getRole().getName();
+		String role = user.getFoundRoles().get(pi) == null ? "未明" : pi.getRole().toString();
 		coordinateOfEnemies[i].setText("<html>玩家："+pi.getAccount().getId()+"<br>"
 				+"坐标："+user.getFoundCoordinates().get(pi).toString()+"<br>"
 				+"角色："+role+"</html>");
@@ -295,10 +306,39 @@ public class GamePanel  extends JPanel{
 	class ReturnListener extends MouseAdapter  {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			mainControl.toStartMenu();
+			// TODO 测试
+			System.out.println(AccountDTO.getInstance().getId()+"端:");
+			List<Player> players = GameDTO.getInstance().getPlayers();
+			for (Player player : players) {
+				System.out.println("--"+player.getAccount().getId()+":");
+				System.out.println("--"+player.getRole()+":");
+				System.out.println("--"+"资源："+player.getResource());
+				System.out.println("--"+"科技："+player.getTechPoint());
+				System.out.println("--"+"坐标："+player.getCoordinate().toString());
+				System.out.println("--"+"保护情况"+player.getCoordinate().getProtectingState());
+				if(player.isPrivilegeAvailable()){
+					System.out.println("--可以用特权");
+				}else{
+					System.out.println("--不可以用特权");
+				}
+				System.out.println("----"+"发现坐标：");
+				for(Entry<Player,Coordinate> entry:player.getFoundCoordinates().entrySet()){
+					System.out.println("----"+entry.getKey().getAccount().getId()+":"+entry.getValue());
+				}
+				System.out.println("----"+"发现角色：");
+				for(Entry<Player,Role> entry:player.getFoundRoles().entrySet()){
+					System.out.println("----"+entry.getKey().getAccount().getId()+":"+entry.getValue());
+				}
+				System.out.println("---------------------------");
+			}
+			System.out.println("=======================================================================");
 		}
 	}
-	
+	/**
+	 * 智子
+	 * @author user
+	 *
+	 */
 	class CardSophonListener implements MouseListener {
 		int x = btnCardSophon.getX();
 		int y = btnCardSophon.getY();
@@ -308,9 +348,9 @@ public class GamePanel  extends JPanel{
 			initSophon();
 		}
 		private void initSophon() {
-			JFrame sophonFinder = new SophonFinderFrame("智子");
-			JPanel finder = new SophonFinderPanel(sophonFinder);
-			sophonFinder.setContentPane(finder);
+			JFrame sophonFinderFrame = new SophonFinderFrame("智子");
+			JPanel finder = new SophonFinderPanel(sophonFinderFrame,gameControl);
+			sophonFinderFrame.setContentPane(finder);
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -338,6 +378,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[0].setVisible(false);
 		}
 	}
+	/**
+	 * 低级智子
+	 * @author user
+	 *
+	 */
 	class CardSillySophonListener implements MouseListener {
 		int x = btnCardSillySophon.getX();
 		int y = btnCardSillySophon.getY();
@@ -349,7 +394,7 @@ public class GamePanel  extends JPanel{
 		}
 		private void initSillySophon() {
 			JFrame sophonFinder = new SophonFinderFrame("人造智子");
-			JPanel finder = new SophonFinderPanel(sophonFinder);
+			JPanel finder = new SophonFinderPanel(sophonFinder,gameControl);
 			sophonFinder.setContentPane(finder);
 			
 		}
@@ -383,6 +428,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[1].setVisible(false);
 		}
 	}
+	/**
+	 * 全局黑域
+	 * @author user
+	 *
+	 */
 	class CardWholeBlockListener implements MouseListener {
 		int x = btnCardWholeBlock.getX();
 		int y = btnCardWholeBlock.getY();
@@ -422,6 +472,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[2].setVisible(false);
 		}
 	}
+	/**
+	 * 局部黑域
+	 * @author user
+	 *
+	 */
 	class CardPatialBlockListener implements MouseListener {
 		int x = btnCardPatialBlock.getX();
 		int y = btnCardPatialBlock.getY();
@@ -467,6 +522,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[3].setVisible(false);
 		}
 	}
+	/**
+	 * 电波干扰（禁广播）
+	 * @author user
+	 *
+	 */
 	class CardNoBroadcastingListener implements MouseListener {
 		int x = btnCardNoBroadcasting.getX();
 		int y = btnCardNoBroadcasting.getY();
@@ -507,13 +567,24 @@ public class GamePanel  extends JPanel{
 			promptLabels[4].setVisible(false);
 		}
 	}
+	/**
+	 * 科技爆发
+	 * @author Ann
+	 *
+	 */
 	class CardTechPotionListener implements MouseListener {
 		int x = btnCardTechPotion.getX();
 		int y = btnCardTechPotion.getY();
 		Rectangle rec = btnCardTechPotion.getBounds();
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			
+			useTechPotion();
+		}
+		private void useTechPotion() {
+			String id=user.getAccount().getId();
+			TechPotion tp = new TechPotion(id, id);
+			CardUse cardUseTp=new CardUse(id, id, tp);
+			gameControl.doOperation(cardUseTp);
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -545,6 +616,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[5].setVisible(false);
 		}
 	}
+	/**
+	 * 资源爆发
+	 * @author user
+	 *
+	 */
 	class CardResourcePotionListener implements MouseListener {
 		Rectangle rec = btnCardResourcePotion.getBounds();
 		@Override
@@ -582,6 +658,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[6].setVisible(false);
 		}
 	}
+	/**
+	 * 赌博
+	 * @author Ann
+	 *
+	 */
 	class CardResourceGamblingListener implements MouseListener {
 		int x = btnCardResourceGambling.getX();
 		int y = btnCardResourceGambling.getY();
@@ -622,6 +703,11 @@ public class GamePanel  extends JPanel{
 			promptLabels[7].setVisible(false);
 		}
 	}
+	/**
+	 * 特权
+	 * @author user
+	 *
+	 */
 	class PriviledgeGetRoleListener implements MouseListener {
 		int x = btnPriviledgeGetRole.getX();
 		int y = btnPriviledgeGetRole.getY();
@@ -661,7 +747,7 @@ public class GamePanel  extends JPanel{
 	
 	class BroadcastListener extends MouseAdapter  {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			panelBroadcast.setVisible(true);
 			panelMessage.setVisible(false);
 			panelHistory.setVisible(false);
@@ -672,7 +758,7 @@ public class GamePanel  extends JPanel{
 	
 	class HistoryListener extends MouseAdapter  {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			/**
 			 * 很HeHe的解决方式
 			 */
@@ -692,7 +778,7 @@ public class GamePanel  extends JPanel{
 	}
 	class MessageListener extends MouseAdapter  {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			panelBroadcast.setVisible(false);
 			panelHistory.setVisible(false);
 			panelMessage.setVisible(true);
@@ -718,7 +804,7 @@ public class GamePanel  extends JPanel{
 	
 	class EndListener extends MouseAdapter {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			
 		}
 	}
@@ -738,7 +824,6 @@ public class GamePanel  extends JPanel{
     }
     
     private void ableToPress(Component c){
-		
 		c.setEnabled(isAbleToPress);
 	}
 	private void unableToPress(Component c){

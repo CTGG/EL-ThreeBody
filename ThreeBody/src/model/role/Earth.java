@@ -19,8 +19,14 @@ import model.card.Card;
 
 public class Earth extends Role{
 	
+	/**
+	 * default
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Earth() {
 		super();
+		// 原60，10，20,30,测试用改成100，100,20,30
 		
 		GameConfig gc=new GameConfig();		
 		List<RoleConfig> roleList=gc.getRolesConfig();
